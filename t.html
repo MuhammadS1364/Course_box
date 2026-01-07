@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Out Pass Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Login Screen */
+        .login-screen {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-icon {
+            width: 80px;
+            height: 80px;
+            background: #667eea;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+        }
+
+        .login-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .input-group input, .input-group select, .input-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus, .input-group select:focus, .input-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:active {
+            background: #5568d3;
+            transform: scale(0.98);
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:active {
+            background: #059669;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:active {
+            background: #dc2626;
+        }
+
+        .error-msg {
+            background: #fee;
+            color: #c33;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .demo-credentials {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 13px;
+        }
+
+        .demo-credentials p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 15px 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .header-user {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            padding: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .stat-value.blue { color: #667eea; }
+        .stat-value.green { color: #10b981; }
+        .stat-value.orange { color: #f59e0b; }
+
+        /* Content */
+        .content {
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-size: 12px;
+            color: #666;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-admin { background: #ede9fe; color: #7c3aed; }
+        .badge-teacher { background: #dbeafe; color: #2563eb; }
+        .badge-security { background: #d1fae5; color: #059669; }
+        .badge-approved { background: #d1fae5; color: #059669; }
+        .badge-checkedout { background: #fef3c7; color: #d97706; }
+        .badge-checkedin { background: #dbeafe; color: #2563eb; }
+
+        /* Pass Cards */
+        .pass-card {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .pass-card.approved {
+            background: #f0fdf4;
+            border-color: #86efac;
+        }
+
+        .pass-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+
+        .pass-student {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .pass-class {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .pass-details {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #555;
+        }
+
+        .pass-details strong {
+            color: #333;
+            font-weight: 600;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .empty-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+            opacity: 0.3;
+        }
+
+        /* Buttons */
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 8px;
+        }
+
+        .btn-outline {
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+        }
+
+        .link-btn {
+            background: none;
+            border: none;
+            color: #667eea;
+            text-decoration: underline;
+            cursor: pointer;
+            padding: 5px;
+            font-size: 14px;
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 16px;
+            }
+            
+            .card {
+                padding: 15px;
+            }
+            
+            table {
+                font-size: 13px;
+            }
+            
+            th, td {
+                padding: 8px;
+            }
+        }
+
+        /* PWA Install prompt */
+        .install-prompt {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: #333;
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+
+        .install-prompt button {
+            background: white;
+            color: #333;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-icon">👤</div>
+                <h1 class="login-title">Out Pass System</h1>
+                <p style="color: #666;">Login to continue</p>
+            </div>
+            
+            <div id="loginError" class="error-msg hidden"></div>
+            
+            <div class="input-group">
+                <label>Username</label>
+                <input type="text" id="username" placeholder="Enter username">
+            </div>
+            
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="Enter password">
+            </div>
+            
+            <button class="btn btn-primary" onclick="login()">Login</button>
+            
+            <div class="demo-credentials">
+                <p style="font-weight: 600; margin-bottom: 10px;">Demo Credentials:</p>
+                <p>Admin: sadaf / 1275</p>
+                <p>Teacher: musthafhudawi / 123</p>
+                <p>Security: faisal / sec123</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="hidden">
+        <div class="header">
+            <div>
+                <div class="header-title">Admin Panel</div>
+                <div class="header-user" id="adminUser"></div>
+            </div>
+            <button class="btn btn-danger btn-small" onclick="logout()">Logout</button>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Users</div>
+                <div class="stat-value blue" id="totalUsers">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Passes</div>
+                <div class="stat-value green" id="totalPasses">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Approved</div>
+                <div class="stat-value orange" id="approvedPasses">0</div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">User Management</h2>
+                    <button class="btn btn-primary btn-small" onclick="toggleAddUser()">+ Add User</button>
+                </div>
+                
+                <div id="addUserForm" class="hidden" style="margin-bottom: 20px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                    <div class="input-group">
+                        <label>Name</label>
+                        <input type="text" id="newName" placeholder="Full Name">
+                    </div>
+                    <div class="input-group">
+                        <label>Username</label>
+                        <input type="text" id="newUsername" placeholder="Username">
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="newPassword" placeholder="Password">
+                    </div>
+                    <div class="input-group">
+                        <label>Role</label>
+                        <select id="newRole">
+                            <option value="teacher">Teacher</option>
+                            <option value="security">Security</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-success" onclick="addUser()">Add User</button>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Username</th>
+                                <th>Role</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+            <!-- Teacher Panel -->
+    <div id="teacherPanel" class="hidden">
+        <div class="header">
+            <div>
+                <div class="header-title">Teacher Panel</div>
+                <div class="header-user" id="teacherUser"></div>
+            </div>
+            <button class="btn btn-danger btn-small" onclick="logout()">Logout</button>
+        </div>
+        
+        <div class="content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Create Out Pass</h2>
+                    <button class="btn btn-primary btn-small" onclick="toggleCreatePass()">+ New Pass</button>
+                </div>
+                
+                <div id="createPassForm" class="hidden" style="margin-bottom: 20px;">
+                    <div class="input-group">
+                        <label>Select Class</label>
+                        <select id="classSelect" onchange="filterStudentsByClass()">
+                            <option value="">All Classes</option>
+                            <option value="U1">U1 - Secondary First Year</option>
+                            <option value="U2">U2 - Secondary Second Year</option>
+                            <option value="U3">U3 - Secondary Third Year</option>
+                            <option value="U4">U4 - Secondary Fourth Year</option>
+                            <option value="U5">U5 - Secondary Final Year</option>
+                            <option value="U6">U6 - Senior Secondary First Year</option>
+                            <option value="U7">U7 - Senior Secondary Final Year</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Select Student</label>
+                        <select id="studentSelect">
+                            <option value="">Choose a student</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Reason</label>
+                        <input type="text" id="passReason" placeholder="e.g., Medical appointment">
+                    </div>
+                    <div class="input-group">
+                        <label>Destination</label>
+                        <input type="text" id="passDestination" placeholder="e.g., City Hospital">
+                    </div>
+                    <div class="input-group">
+                        <label>Out Date & Time</label>
+                        <input type="datetime-local" id="passOutTime">
+                    </div>
+                    <div class="input-group">
+                        <label>Expected Return Time</label>
+                        <input type="datetime-local" id="passReturnTime">
+                    </div>
+                    <button class="btn btn-success" onclick="createPass()">Approve & Create Pass</button>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2 class="card-title" style="margin-bottom: 15px;">My Approved Passes</h2>
+                <div id="teacherPasses"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Security Panel -->
+    <div id="securityPanel" class="hidden">
+        <div class="header">
+            <div>
+                <div class="header-title">Security Panel</div>
+                <div class="header-user" id="securityUser"></div>
+            </div>
+            <button class="btn btn-danger btn-small" onclick="logout()">Logout</button>
+        </div>
+        
+        <div class="content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Filter by Class</h2>
+                    <select id="securityClassFilter" onchange="renderSecurityPasses()" style="padding: 8px; border-radius: 8px; border: 2px solid #e0e0e0;">
+                        <option value="">All Classes</option>
+                        <option value="U1">U1 - Secondary First Year</option>
+                        <option value="U2">U2 - Secondary Second Year</option>
+                        <option value="U3">U3 - Secondary Third Year</option>
+                        <option value="U4">U4 - Secondary Fourth Year</option>
+                        <option value="U5">U5 - Secondary Final Year</option>
+                        <option value="U6">U6 - Senior Secondary First Year</option>
+                        <option value="U7">U7 - Senior Secondary Final Year</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Approved Out Passes</h2>
+                    <div style="color: #10b981; font-weight: 600;">
+                        ✓ <span id="activePassesCount">0</span> Active
+                    </div>
+                </div>
+                <div id="securityPasses"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Storage
+        let currentUser = null;
+        let users = [
+            { id: 1, username: 'admin', password: 'admin123', role: 'admin', name: 'Admin User' },
+            { id: 2, username: 'teacher1', password: 'teacher123', role: 'teacher', name: 'John Teacher' },
+            { id: 3, username: 'security1', password: 'security123', role: 'security', name: 'Mike Security' }
+        ];
+        let passes = [];
+        let students = [
+            // U1 - Secondary First Year
+            { id: 1, name: 'MD AZMAT ANSARI', class: 'U1', rollNo: 'U1627' },
+            { id: 2, name: 'MOHAMMED FAHEEM PATHAN', class: 'U1', rollNo: 'U1637' },
+            { id: 3, name: 'ANAS MAHBOOB', class: 'U1', rollNo: 'U1630' },
+            { id: 4, name: 'MOHAMMAD ZILAN RAZA MULTANI', class: 'U1', rollNo: 'U1631' },
+            { id: 5, name: 'AAWESH RAZA', class: 'U1', rollNo: 'U1650' },
+            { id: 6, name: 'ZAINI DAHLAN', class: 'U1', rollNo: 'U1645' },
+            { id: 7, name: 'ANIS RAJA', class: 'U1', rollNo: 'U1653' },
+            { id: 8, name: 'MD FURQUAN', class: 'U1', rollNo: 'U1636' },
+            { id: 9, name: 'MD WASIULLAH', class: 'U1', rollNo: 'U1639' },
+            { id: 10, name: 'MOHAMMAD AZAM QADRI', class: 'U1', rollNo: 'U1648' },
+            { id: 11, name: 'MO. AHAMAD', class: 'U1', rollNo: 'U1649' },
+            { id: 12, name: 'MOHAMMAD WAQARUL QADRI', class: 'U1', rollNo: 'U1666' },
+            { id: 13, name: 'AMINUL HUQ', class: 'U1', rollNo: 'U1628' },
+            { id: 14, name: 'SHAHADAT BABU', class: 'U1', rollNo: 'U1633' },
+            { id: 15, name: 'MD SIPTAN RAJA', class: 'U1', rollNo: 'U1646' },
+            { id: 16, name: 'MUHAMMED JUNAIS', class: 'U1', rollNo: 'U1664' },
+            { id: 17, name: 'FIDAUL MUSTAFA', class: 'U1', rollNo: 'U1670' },
+            { id: 18, name: 'FAIZANE MUSTAFA', class: 'U1', rollNo: 'U1652' },
+            { id: 19, name: 'AAMIR AZIZ', class: 'U1', rollNo: 'U1635' },
+            { id: 20, name: 'ABU HAMZA', class: 'U1', rollNo: 'U1642' },
+            { id: 21, name: 'MOHD AFJAL', class: 'U1', rollNo: 'U1644' },
+            { id: 22, name: 'MUHAMMED NIHAL ALI', class: 'U1', rollNo: 'U1663' },
+            { id: 23, name: 'MD ASIF RAZA', class: 'U1', rollNo: 'U1671' },
+            { id: 24, name: 'MD CHAND BABU', class: 'U1', rollNo: 'U1632' },
+            { id: 25, name: 'MOHAMMAD JAIYADUR RABBANI', class: 'U1', rollNo: 'U1662' },
+            { id: 26, name: 'MOHAMMAD FARHAN', class: 'U1', rollNo: 'U1647' },
+            { id: 27, name: 'ARIZ HAMZA', class: 'U1', rollNo: 'U1654' },
+            { id: 28, name: 'ASHWAD ANSARI', class: 'U1', rollNo: 'U1659' },
+            { id: 29, name: 'AAZAR ALI', class: 'U1', rollNo: 'U1669' },
+            { id: 30, name: 'FAIZAN', class: 'U1', rollNo: 'U1634' },
+            { id: 31, name: 'MISHBAUL HAQ', class: 'U1', rollNo: 'U1629' },
+            { id: 32, name: 'MOHAMMAD REHAN', class: 'U1', rollNo: 'U1656' },
+            { id: 33, name: 'SIFTANIN RZA', class: 'U1', rollNo: 'U1661' },
+            { id: 34, name: 'TAYAL TUFAIL', class: 'U1', rollNo: 'U1665' },
+            { id: 35, name: 'MO REHAN RAZA', class: 'U1', rollNo: 'U1640' },
+            { id: 36, name: 'MOHAMMAD RUMAIZ QASIM', class: 'U1', rollNo: 'U1651' },
+            { id: 37, name: 'MD REHAN REJA MANSURI', class: 'U1', rollNo: 'U1657' },
+            { id: 38, name: 'TATHEER', class: 'U1', rollNo: 'U1667' },
+            { id: 39, name: 'AFFAN REZA', class: 'U1', rollNo: 'U1658' },
+            { id: 40, name: 'MOHD MOHIUDDIN', class: 'U1', rollNo: 'U1655' },
+            { id: 41, name: 'ZEYAD ALAM', class: 'U1', rollNo: 'U1660' },
+            { id: 42, name: 'ANAS KHAN', class: 'U1', rollNo: 'U1668' },
+            { id: 43, name: 'MOHD ASAD', class: 'U1', rollNo: 'U1641' },
+            { id: 44, name: 'MOHAMMED AZHAN', class: 'U1', rollNo: 'U1643' },
+            // U2 - Secondary Second Year
+            { id: 45, name: 'MD ASHAD AQEEL ANSARI', class: 'U2', rollNo: 'U1596' },
+            { id: 46, name: 'MOHAMMAD ROOH FAIZ', class: 'U2', rollNo: 'U1552' },
+            { id: 47, name: 'SAMIR ANSARI', class: 'U2', rollNo: 'U1604' },
+            { id: 48, name: 'MD TANVIR', class: 'U2', rollNo: 'U1569' },
+            { id: 49, name: 'ABU SHAHMA', class: 'U2', rollNo: 'U1588' },
+            { id: 50, name: 'SHAYAN HUSSAIN', class: 'U2', rollNo: 'U1597' },
+            { id: 51, name: 'FAIJAN ALI', class: 'U2', rollNo: 'U1572' },
+            { id: 52, name: 'MD BILAL KHAN', class: 'U2', rollNo: 'U1592' },
+            { id: 53, name: 'SAJID HUSAIN', class: 'U2', rollNo: 'U1579' },
+            { id: 54, name: 'MD SAID ANSARI', class: 'U2', rollNo: 'U1570' },
+            { id: 55, name: 'HIFZUR RAHMAN', class: 'U2', rollNo: 'U1577' },
+            { id: 56, name: 'HABIBULLAH', class: 'U2', rollNo: 'U1578' },
+            { id: 57, name: 'MD IJAMAMUL ANSARI', class: 'U2', rollNo: 'U1584' },
+            { id: 58, name: 'GULAM MOBASSIR', class: 'U2', rollNo: 'U1585' },
+            { id: 59, name: 'MD ASHRAF ANSARI', class: 'U2', rollNo: 'U1590' },
+            { id: 60, name: 'MD IRFAN KHAN', class: 'U2', rollNo: 'U1583' },
+            { id: 61, name: 'SIKANDAR ALAM', class: 'U2', rollNo: 'U1591' },
+            { id: 62, name: 'SAGIR RAZA', class: 'U2', rollNo: 'U1593' },
+            { id: 63, name: 'SAEEDUR-RAHMAN', class: 'U2', rollNo: 'U1587' },
+            { id: 64, name: 'MOHAMMED KAIF', class: 'U2', rollNo: 'U1609' },
+            { id: 65, name: 'GULAM MOJAMMIL', class: 'U2', rollNo: 'U1603' },
+            { id: 66, name: 'ABU KHOZAIMA', class: 'U2', rollNo: 'U1580' },
+            { id: 67, name: 'MD ANAS', class: 'U2', rollNo: 'U1601' },
+            { id: 68, name: 'TAHSEEN RAZA', class: 'U2', rollNo: 'U1520' },
+            { id: 69, name: 'MD ABU BAKAR', class: 'U2', rollNo: 'U1575' },
+            { id: 70, name: 'MD FAIZAN ALI', class: 'U2', rollNo: 'U1594' },
+            { id: 71, name: 'MOHD ASHRAF', class: 'U2', rollNo: 'U1595' },
+            { id: 72, name: 'MD ZIYAULLAH', class: 'U2', rollNo: 'U1600' },
+            { id: 73, name: 'SABAULLAH', class: 'U2', rollNo: 'U1567' },
+            { id: 74, name: 'MD SOFIYAN RAZA FIROZ', class: 'U2', rollNo: 'U1542' },
+            { id: 75, name: 'MD MOSAHID KHAN', class: 'U2', rollNo: 'U1568' },
+            { id: 76, name: 'HAMID RAZA', class: 'U2', rollNo: 'U1571' },
+            { id: 77, name: 'JISHAN RAZA', class: 'U2', rollNo: 'U1573' },
+            { id: 78, name: 'SUHEL RAZA', class: 'U2', rollNo: 'U1581' },
+            { id: 79, name: 'ZEESHAN RAZA', class: 'U2', rollNo: 'U1582' },
+            { id: 80, name: 'ZIKRULLAH FIRDAUSI', class: 'U2', rollNo: 'U1586' },
+            { id: 81, name: 'NURULAIN RAJA', class: 'U2', rollNo: 'U1589' },
+            { id: 82, name: 'ZEESHAN IKRAM VADHARIYA', class: 'U2', rollNo: 'U1598' },
+            { id: 83, name: 'SYED AMMAR HUSSAIN', class: 'U2', rollNo: 'U1599' },
+            { id: 84, name: 'MD MOKDAS ALAM', class: 'U2', rollNo: 'U1605' },
+            // U3 - Secondary Third Year
+            { id: 85, name: 'AMIR RAZA', class: 'U3', rollNo: 'U1530' },
+            { id: 86, name: 'ARIF IQBAL', class: 'U3', rollNo: 'U1518' },
+            { id: 87, name: 'SAKLAIN RAZA', class: 'U3', rollNo: 'U1514' },
+            { id: 88, name: 'MOHAMMED', class: 'U3', rollNo: 'U1533' },
+            { id: 89, name: 'MD SIBTEN RAJA', class: 'U3', rollNo: 'U1522' },
+            { id: 90, name: 'MD WAQID RAZA', class: 'U3', rollNo: 'U1528' },
+            { id: 91, name: 'MD HUSSAIN AKHTAR RAZA', class: 'U3', rollNo: 'U1547' },
+            { id: 92, name: 'SHAHANSHAH ALAM', class: 'U3', rollNo: 'U1515' },
+            { id: 93, name: 'SYED DANIYAL HASAN', class: 'U3', rollNo: 'U1549' },
+            { id: 94, name: 'MOHD TANVEER', class: 'U3', rollNo: 'U1519' },
+            { id: 95, name: 'MD ARSALAN RAZA', class: 'U3', rollNo: 'U1451' },
+            { id: 96, name: 'MINHAJ ALAM', class: 'U3', rollNo: 'U1521' },
+            { id: 97, name: 'MD OWAIS RAZA', class: 'U3', rollNo: 'U1524' },
+            { id: 98, name: 'MD MOJAHIR ALI', class: 'U3', rollNo: 'U1610' },
+            { id: 99, name: 'MOHAMMAD AATIF', class: 'U3', rollNo: 'U1484' },
+            { id: 100, name: 'SYED ASJAD IQBAL', class: 'U3', rollNo: 'U1534' },
+            { id: 101, name: 'MD LARIAB', class: 'U3', rollNo: 'U1525' },
+            { id: 102, name: 'MD ANAS', class: 'U3', rollNo: 'U1536' },
+            { id: 103, name: 'MOHD HARIS', class: 'U3', rollNo: 'U1539' },
+            { id: 104, name: 'MD MOINUDDIN', class: 'U3', rollNo: 'U1553' },
+            { id: 105, name: 'MOHD ALI', class: 'U3', rollNo: 'U1541' },
+            { id: 106, name: 'HAMMAD RAZA SHAIKH', class: 'U3', rollNo: 'U1483' },
+            { id: 107, name: 'SUFIYAN AHMAD KARIMI', class: 'U3', rollNo: 'U1517' },
+            { id: 108, name: 'MD ADNAN', class: 'U3', rollNo: 'U1532' },
+            { id: 109, name: 'MD SAKIR SHAIKH', class: 'U3', rollNo: 'U1480' },
+            { id: 110, name: 'SHAHNAWAJ HUSSAIN', class: 'U3', rollNo: 'U1526' },
+            { id: 111, name: 'SHAHNAWAZ NOUSHAD', class: 'U3', rollNo: 'U1537' },
+            { id: 112, name: 'FAIZ RAJA', class: 'U3', rollNo: 'U1523' },
+            { id: 113, name: 'FARAZ KHAN', class: 'U3', rollNo: 'U1548' },
+            { id: 114, name: 'MOHAMMAD ANSARI', class: 'U3', rollNo: 'U1550' },
+            { id: 115, name: 'SAHAWAZ ANSARI', class: 'U3', rollNo: 'U1516' },
+            { id: 116, name: 'MD AZMAL REHAN', class: 'U3', rollNo: 'U1545' },
+            { id: 117, name: 'MD. ALMOTALI', class: 'U3', rollNo: 'U1555' },
+            { id: 118, name: 'MD MOHIBUL', class: 'U3', rollNo: 'U1535' },
+            { id: 119, name: 'MD FARHAN HUSSAIN', class: 'U3', rollNo: 'U1441' },
+            { id: 120, name: 'MD MOGISH RAZA', class: 'U3', rollNo: 'U1469' },
+            { id: 121, name: 'MOHD. ROMAAN', class: 'U3', rollNo: 'U1529' },
+            { id: 122, name: 'TANZIRUL RAHMAN', class: 'U3', rollNo: 'U1531' },
+            { id: 123, name: 'HASNAIN AHMED SHEIKH', class: 'U3', rollNo: 'U1540' },
+            { id: 124, name: 'ATHAR RZA', class: 'U3', rollNo: 'U1554' },
+            // U4 - Secondary Fourth Year
+            { id: 125, name: 'AHSAN ANSARI', class: 'U4', rollNo: 'U1444' },
+            { id: 126, name: 'HASHMATH RAZA', class: 'U4', rollNo: 'U1457' },
+            { id: 127, name: 'MOHD HUZAIFA ANSARI', class: 'U4', rollNo: 'U1473' },
+            { id: 128, name: 'MD MUSTUPHA RAIN', class: 'U4', rollNo: 'U1476' },
+            { id: 129, name: 'MD NEMATULLAH', class: 'U4', rollNo: 'U1343' },
+            { id: 130, name: 'SHAHIL ALI', class: 'U4', rollNo: 'U1442' },
+            { id: 131, name: 'ANSARI MUHAMMED AHMED', class: 'U4', rollNo: 'U1403' },
+            { id: 132, name: 'MD MUDASSIR', class: 'U4', rollNo: 'U1372' },
+            { id: 133, name: 'MD ABDUL ALAM RAIN', class: 'U4', rollNo: 'U1439' },
+            { id: 134, name: 'MD YUSUF ALI SHAIKH', class: 'U4', rollNo: 'U1458' },
+            { id: 135, name: 'MD ZULQARNAIN SHAIKH', class: 'U4', rollNo: 'U1440' },
+            { id: 136, name: 'MOKARRAM FAIZ', class: 'U4', rollNo: 'U1452' },
+            { id: 137, name: 'SYED ABDUL AHAD SYED', class: 'U4', rollNo: 'U1468' },
+            { id: 138, name: 'ATIF NEYAZ SHAIKH', class: 'U4', rollNo: 'U1437' },
+            { id: 139, name: 'SHAHBAZ ANSARI ANSARI', class: 'U4', rollNo: 'U1448' },
+            { id: 140, name: 'MOHD ANAS ANSARI', class: 'U4', rollNo: 'U1478' },
+            { id: 141, name: 'ZEESHAN KHAN', class: 'U4', rollNo: 'U1374' },
+            { id: 142, name: 'AHMAD RAJA', class: 'U4', rollNo: 'U1402' },
+            { id: 143, name: 'MOHD FAIZAN', class: 'U4', rollNo: 'U1376' },
+            { id: 144, name: 'MD ARIF KHAN', class: 'U4', rollNo: 'U1381' },
+            { id: 145, name: 'JUNAID ANSARI', class: 'U4', rollNo: 'U1438' },
+            { id: 146, name: 'SHAMSUDDIN HASHIMI', class: 'U4', rollNo: 'U1479' },
+            { id: 147, name: 'GULAM YAZDANI', class: 'U4', rollNo: 'U1481' },
+            { id: 148, name: 'MD TAUSIF RAZA ANSARI', class: 'U4', rollNo: 'U1459' },
+            { id: 149, name: 'MERAJ KHAN', class: 'U4', rollNo: 'U1466' },
+            { id: 150, name: 'AMAN ARSHAD', class: 'U4', rollNo: 'U1450' },
+            { id: 151, name: 'MOHD KAISH ANSARI', class: 'U4', rollNo: 'U1482' },
+            { id: 152, name: 'MD ESMATHULLAH', class: 'U4', rollNo: 'U1342' },
+            { id: 153, name: 'FARHAN RAZA ANSARI', class: 'U4', rollNo: 'U1456' },
+            { id: 154, name: 'HAMJA ALI', class: 'U4', rollNo: 'U1474' },
+            { id: 155, name: 'MOHAMMAD AHAD ABBASI', class: 'U4', rollNo: 'U1367' },
+            { id: 156, name: 'MUHAMMAD SHUAIB', class: 'U4', rollNo: 'U1382' },
+            { id: 157, name: 'MUBASHIR RAZA', class: 'U4', rollNo: 'U1470' },
+            { id: 158, name: 'MD HASAN', class: 'U4', rollNo: 'U1471' },
+            // U5 - Secondary Final Year
+            { id: 159, name: 'SHAFEEQURRAHMAN', class: 'U5', rollNo: 'U1362' },
+            { id: 160, name: 'MD RIZWAN AHMED', class: 'U5', rollNo: 'U1387' },
+            { id: 161, name: 'FAIZ MOHAMMED PATHAN', class: 'U5', rollNo: 'U1395' },
+            { id: 162, name: 'MD ASHAR ALI', class: 'U5', rollNo: 'U1380' },
+            { id: 163, name: 'HASAN RAZA', class: 'U5', rollNo: 'U1383' },
+            { id: 164, name: 'JAUHAR TANVIR', class: 'U5', rollNo: 'U1365' },
+            { id: 165, name: 'FAHAD AHMED', class: 'U5', rollNo: 'N/A' },
+            { id: 166, name: 'MD RAHMATHULLAH ANSARI', class: 'U5', rollNo: 'U1363' },
+            { id: 167, name: 'AVESH', class: 'U5', rollNo: 'N/A' },
+            { id: 168, name: 'ARIF HUSSAIN', class: 'U5', rollNo: 'U1400' },
+            { id: 169, name: 'ARMAN KHAN', class: 'U5', rollNo: 'U1351' },
+            { id: 170, name: 'SHEKH NABEEL', class: 'U5', rollNo: 'N/A' },
+            { id: 171, name: 'SHAFEE ALAM', class: 'U5', rollNo: 'N/A' },
+            { id: 172, name: 'MO ASGAR ALI', class: 'U5', rollNo: 'U1390' },
+            { id: 173, name: 'ABU TALIB', class: 'U5', rollNo: 'U1341' },
+            { id: 174, name: 'ZAID AHMED', class: 'U5', rollNo: 'U1386' },
+            { id: 175, name: 'MUHAMMAD SHOAIB ALAM', class: 'U5', rollNo: 'U1373' },
+            { id: 176, name: 'AHMED ISMAIL', class: 'U5', rollNo: 'U1398' },
+            { id: 177, name: 'MD AAFTAB', class: 'U5', rollNo: 'U1303' },
+            { id: 178, name: 'MUHAMMED IMRAN RAIN', class: 'U5', rollNo: 'U1379' },
+            { id: 179, name: 'MOHAMMED RAHIL', class: 'U5', rollNo: 'U1311' },
+            { id: 180, name: 'MD RAIHAN RAJA NOORI', class: 'U5', rollNo: 'U1320' },
+            { id: 181, name: 'AHMAD RAZA', class: 'U5', rollNo: 'U1339' },
+            { id: 182, name: 'S SALMAN FARIS', class: 'U5', rollNo: 'U1396' },
+            // U6 - Senior Secondary First Year
+            { id: 183, name: 'MOHD ATAULLAH', class: 'U6', rollNo: 'U1270' },
+            { id: 184, name: 'ABDUL SADIQ', class: 'U6', rollNo: 'N/A' },
+            { id: 185, name: 'JAHID AKHATAR', class: 'U6', rollNo: 'U1313' },
+            { id: 186, name: 'JUNAID AKHTAR', class: 'U6', rollNo: 'N/A' },
+            { id: 187, name: 'MOHAMMAD REHAN', class: 'U6', rollNo: 'U1242' },
+            { id: 188, name: 'MOHAMMAD ZAID MULTANI', class: 'U6', rollNo: 'U1314' },
+            { id: 189, name: 'MUNAWWAR', class: 'U6', rollNo: 'N/A' },
+            { id: 190, name: 'AYAN KHAN', class: 'U6', rollNo: 'U1352' },
+            { id: 191, name: 'MD MANAJRUL HAQUE', class: 'U6', rollNo: 'U1330' },
+            { id: 192, name: 'FAIZAN', class: 'U6', rollNo: 'U1304' },
+            { id: 193, name: 'DILSHAD ANSARI', class: 'U6', rollNo: 'U1345' },
+            { id: 194, name: 'HASAN WASEEM', class: 'U6', rollNo: 'U1273' },
+            { id: 195, name: 'MUZAKKIR', class: 'U6', rollNo: 'U1315' },
+            { id: 196, name: 'MOHD SHAHBAZ', class: 'U6', rollNo: 'U1251' },
+            { id: 197, name: 'MD SADDAM HUSAIN', class: 'U6', rollNo: 'U1317' },
+            { id: 198, name: 'SADAN', class: 'U6', rollNo: 'N/A' },
+            { id: 199, name: 'NASIR HUSSAIN', class: 'U6', rollNo: 'U1248' },
+            { id: 200, name: 'MD REHAN RAZA', class: 'U6', rollNo: 'U1286' },
+            // U7 - Senior Secondary Final Year
+            { id: 201, name: 'HASAN RAZA', class: 'U7', rollNo: 'U1169' },
+            { id: 202, name: 'MD SABIR', class: 'U7', rollNo: 'U1678' },
+            { id: 203, name: 'SUFIYAN AHMED RAZA', class: 'U7', rollNo: 'U1260' },
+            { id: 204, name: 'MD. ACHHE MIYAN', class: 'U7', rollNo: 'U1197' },
+            { id: 205, name: 'GULAM DASTAGIR', class: 'U7', rollNo: 'U1268' },
+            { id: 206, name: 'MOHD SAHIL', class: 'U7', rollNo: 'N/A' },
+            { id: 207, name: 'MOHD FAISAL', class: 'U7', rollNo: 'N/A' },
+            { id: 208, name: 'SADAF ZIYA', class: 'U7', rollNo: 'U1275' },
+            { id: 209, name: 'MD SHAMSHAD', class: 'U7', rollNo: 'U1201' },
+            { id: 210, name: 'HANZALA MAQSOOM', class: 'U7', rollNo: 'U1161' },
+            { id: 211, name: 'MOHAMMED ZEESHAN SHAIKH', class: 'U7', rollNo: 'U1277' },
+            { id: 212, name: 'MD MOSAHEB ALI', class: 'U7', rollNo: 'U1210' },
+            { id: 213, name: 'REHAN AHMED', class: 'U7', rollNo: 'U1674' },
+            { id: 214, name: 'MD ZAID RAZA', class: 'U7', rollNo: 'U1237' },
+            { id: 215, name: 'ABBU SHAHMA', class: 'U7', rollNo: 'U1278' },
+            { id: 216, name: 'MD FIROZ ALAM', class: 'U7', rollNo: 'U1249' },
+            { id: 217, name: 'AFRAN SHEIKH', class: 'U7', rollNo: 'U1676' },
+            { id: 218, name: 'ULFATH HUUSSAIN', class: 'U7', rollNo: 'U1679' },
+            { id: 219, name: 'KAUNAIN', class: 'U7', rollNo: 'U1675' },
+            { id: 220, name: 'TOSIF ANSARI', class: 'U7', rollNo: 'U1274' },
+            { id: 221, name: 'MOHAMMAD SIBGATULLAH', class: 'U7', rollNo: 'N/A' },
+            { id: 222, name: 'THAJUDHEEN', class: 'U7', rollNo: 'U1207' },
+            { id: 223, name: 'ASJAD RAZA', class: 'U7', rollNo: 'U1283' },
+            { id: 224, name: 'ARSALAN', class: 'U7', rollNo: 'U1677' }
+        ];
+
+        // Login Function
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('loginError');
+            
+            const user = users.find(u => u.username === username && u.password === password);
+            
+            if (user) {
+                currentUser = user;
+                errorDiv.classList.add('hidden');
+                document.getElementById('loginScreen').classList.add('hidden');
+                
+                if (user.role === 'admin') {
+                    showAdminPanel();
+                } else if (user.role === 'teacher') {
+                    showTeacherPanel();
+                } else if (user.role === 'security') {
+                    showSecurityPanel();
+                }
+            } else {
+                errorDiv.textContent = 'Invalid username or password';
+                errorDiv.classList.remove('hidden');
+            }
+        }
+
+        // Logout Function
+        function logout() {
+            currentUser = null;
+            document.getElementById('adminPanel').classList.add('hidden');
+            document.getElementById('teacherPanel').classList.add('hidden');
+            document.getElementById('securityPanel').classList.add('hidden');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        // Admin Panel Functions
+        function showAdminPanel() {
+            document.getElementById('adminPanel').classList.remove('hidden');
+            document.getElementById('adminUser').textContent = 'Welcome, ' + currentUser.name;
+            updateAdminStats();
+            renderUsersTable();
+        }
+
+        function updateAdminStats() {
+            document.getElementById('totalUsers').textContent = users.length;
+            document.getElementById('totalPasses').textContent = passes.length;
+            document.getElementById('approvedPasses').textContent = passes.filter(p => p.status === 'approved').length;
+        }
+
+        function toggleAddUser() {
+            document.getElementById('addUserForm').classList.toggle('hidden');
+        }
+
+        function addUser() {
+            const name = document.getElementById('newName').value;
+            const username = document.getElementById('newUsername').value;
+            const password = document.getElementById('newPassword').value;
+            const role = document.getElementById('newRole').value;
+            
+            if (!name || !username || !password) {
+                alert('Please fill all fields');
+                return;
+            }
+            
+            const id = users.length + 1;
+            users.push({ id, name, username, password, role });
+            
+            document.getElementById('newName').value = '';
+            document.getElementById('newUsername').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('newRole').value = 'teacher';
+            
+            toggleAddUser();
+            renderUsersTable();
+            updateAdminStats();
+        }
+
+        function deleteUser(id) {
+            if (id === 1) {
+                alert('Cannot delete main admin account');
+                return;
+            }
+            if (confirm('Are you sure you want to delete this user?')) {
+                users = users.filter(u => u.id !== id);
+                renderUsersTable();
+                updateAdminStats();
+            }
+        }
+
+        function renderUsersTable() {
+            const tbody = document.getElementById('usersTable');
+            tbody.innerHTML = users.map(user => `
+                <tr>
+                    <td>${user.name}</td>
+                    <td>${user.username}</td>
+                    <td><span class="badge badge-${user.role}">${user.role}</span></td>
+                    <td><button class="link-btn" onclick="deleteUser(${user.id})" ${user.id === 1 ? 'disabled' : ''}>Delete</button></td>
+                </tr>
+            `).join('');
+        }
+
+        // Teacher Panel Functions
+        function showTeacherPanel() {
+            document.getElementById('teacherPanel').classList.remove('hidden');
+            document.getElementById('teacherUser').textContent = 'Welcome, ' + currentUser.name;
+            populateStudentSelect();
+            renderTeacherPasses();
+        }
+
+        function populateStudentSelect() {
+            const select = document.getElementById('studentSelect');
+            select.innerHTML = '<option value="">Choose a student</option>' +
+                students.map(s => `<option value="${s.id}">${s.name} - ${s.class} (Roll: ${s.rollNo})</option>`).join('');
+        }
+
+        function filterStudentsByClass() {
+            const classFilter = document.getElementById('classSelect').value;
+            const select = document.getElementById('studentSelect');
+            
+            if (classFilter === '') {
+                select.innerHTML = '<option value="">Choose a student</option>' +
+                    students.map(s => `<option value="${s.id}">${s.name} - ${s.class} (Roll: ${s.rollNo})</option>`).join('');
+            } else {
+                const filteredStudents = students.filter(s => s.class === classFilter);
+                select.innerHTML = '<option value="">Choose a student</option>' +
+                    filteredStudents.map(s => `<option value="${s.id}">${s.name} - ${s.class} (Roll: ${s.rollNo})</option>`).join('');
+            }
+        }
+
+        function toggleCreatePass() {
+            document.getElementById('createPassForm').classList.toggle('hidden');
+        }
+
+        function createPass() {
+            const studentId = document.getElementById('studentSelect').value;
+            const reason = document.getElementById('passReason').value;
+            const destination = document.getElementById('passDestination').value;
+            const outTime = document.getElementById('passOutTime').value;
+            const returnTime = document.getElementById('passReturnTime').value;
+            
+            if (!studentId || !reason || !destination || !outTime || !returnTime) {
+                alert('Please fill all fields');
+                return;
+            }
+            
+            const student = students.find(s => s.id === parseInt(studentId));
+            const pass = {
+                id: passes.length + 1,
+                student: student,
+                reason: reason,
+                destination: destination,
+                outTime: outTime,
+                returnTime: returnTime,
+                status: 'approved',
+                checkoutStatus: 'pending',
+                checkoutTime: null,
+                checkinTime: null,
+                createdBy: currentUser.name,
+                createdAt: new Date().toLocaleString()
+            };
+            
+            passes.push(pass);
+            
+            document.getElementById('classSelect').value = '';
+            document.getElementById('studentSelect').value = '';
+            document.getElementById('passReason').value = '';
+            document.getElementById('passDestination').value = '';
+            document.getElementById('passOutTime').value = '';
+            document.getElementById('passReturnTime').value = '';
+            
+            toggleCreatePass();
+            renderTeacherPasses();
+            alert('Pass created and approved successfully!');
+        }
+
+        function renderTeacherPasses() {
+            const myPasses = passes.filter(p => p.createdBy === currentUser.name);
+            const container = document.getElementById('teacherPasses');
+            
+            if (myPasses.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><p>No passes created yet</p></div>';
+            } else {
+                container.innerHTML = myPasses.map(pass => `
+                    <div class="pass-card approved">
+                        <div class="pass-header">
+                            <div>
+                                <div class="pass-student">${pass.student.name}</div>
+                                <div class="pass-class">${pass.student.class} - Roll No: ${pass.student.rollNo}</div>
+                            </div>
+                            <span class="badge ${
+                                pass.checkoutStatus === 'checkedin' ? 'badge-checkedin' :
+                                pass.checkoutStatus === 'checkedout' ? 'badge-checkedout' :
+                                'badge-approved'
+                            }">
+                                ${pass.checkoutStatus === 'checkedin' ? 'Checked In' :
+                                  pass.checkoutStatus === 'checkedout' ? 'Checked Out' :
+                                  'Approved'}
+                            </span>
+                        </div>
+                        <div class="pass-details">
+                            <strong>Reason:</strong> ${pass.reason}<br>
+                            <strong>Destination:</strong> ${pass.destination}<br>
+                            <strong>Out Time:</strong> ${new Date(pass.outTime).toLocaleString()}<br>
+                            <strong>Expected Return:</strong> ${new Date(pass.returnTime).toLocaleString()}<br>
+                            ${pass.checkoutTime ? `<strong>Checked Out At:</strong> ${pass.checkoutTime}<br>` : ''}
+                            ${pass.checkinTime ? `<strong>Checked In At:</strong> ${pass.checkinTime}<br>` : ''}
+                            <strong>Created:</strong> ${pass.createdAt}
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Security Panel Functions
+        function showSecurityPanel() {
+            document.getElementById('securityPanel').classList.remove('hidden');
+            document.getElementById('securityUser').textContent = 'Welcome, ' + currentUser.name;
+            renderSecurityPasses();
+        }
+
+        function checkOut(passId) {
+            const pass = passes.find(p => p.id === passId);
+            if (pass) {
+                pass.checkoutStatus = 'checkedout';
+                pass.checkoutTime = new Date().toLocaleString();
+                renderSecurityPasses();
+            }
+        }
+
+        function checkIn(passId) {
+            const pass = passes.find(p => p.id === passId);
+            if (pass) {
+                pass.checkoutStatus = 'checkedin';
+                pass.checkinTime = new Date().toLocaleString();
+                renderSecurityPasses();
+            }
+        }
+
+        function renderSecurityPasses() {
+            const classFilter = document.getElementById('securityClassFilter').value;
+            let approvedPasses = passes.filter(p => p.status === 'approved');
+            
+            // Filter by class if selected
+            if (classFilter) {
+                approvedPasses = approvedPasses.filter(p => p.student.class === classFilter);
+            }
+            
+            const container = document.getElementById('securityPasses');
+            document.getElementById('activePassesCount').textContent = approvedPasses.length;
+            
+            if (approvedPasses.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">🕐</div><p>No approved passes at the moment</p></div>';
+            } else {
+                container.innerHTML = approvedPasses.map(pass => `
+                    <div class="pass-card approved">
+                        <div class="pass-header">
+                            <div>
+                                <div class="pass-student">${pass.student.name}</div>
+                                <div class="pass-class">${pass.student.class} - Roll No: ${pass.student.rollNo}</div>
+                            </div>
+                            <span class="badge ${
+                                pass.checkoutStatus === 'checkedin' ? 'badge-checkedin' :
+                                pass.checkoutStatus === 'checkedout' ? 'badge-checkedout' :
+                                'badge-approved'
+                            }">
+                                ${pass.checkoutStatus === 'checkedin' ? 'Checked In' :
+                                  pass.checkoutStatus === 'checkedout' ? 'Checked Out' :
+                                  'Pending'}
+                            </span>
+                        </div>
+                        <div class="pass-details">
+                            <strong>Reason:</strong> ${pass.reason}<br>
+                            <strong>Destination:</strong> ${pass.destination}<br>
+                            <strong>Out Time:</strong> ${new Date(pass.outTime).toLocaleString()}<br>
+                            <strong>Expected Return:</strong> ${new Date(pass.returnTime).toLocaleString()}<br>
+                            ${pass.checkoutTime ? `<strong>Checked Out At:</strong> ${pass.checkoutTime}<br>` : ''}
+                            ${pass.checkinTime ? `<strong>Checked In At:</strong> ${pass.checkinTime}<br>` : ''}
+                            <strong>Approved by:</strong> ${pass.createdBy}<br>
+                            <strong>Created:</strong> ${pass.createdAt}
+                        </div>
+                        <div style="margin-top: 15px; display: flex; gap: 10px;">
+                            ${pass.checkoutStatus === 'pending' ? 
+                                `<button class="btn btn-primary btn-small" onclick="checkOut(${pass.id})" style="flex: 1;">Check Out</button>` :
+                              pass.checkoutStatus === 'checkedout' ?
+                                `<button class="btn btn-success btn-small" onclick="checkIn(${pass.id})" style="flex: 1;">Check In</button>` :
+                                `<span style="color: #10b981; font-weight: 600;">✓ Completed</span>`
+                            }
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Enter key support for login
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('password').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    login();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
