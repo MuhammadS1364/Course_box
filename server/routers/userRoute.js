@@ -13,3 +13,7 @@ const route = express.Router();
 
 // syntax ("yourUrl", your definiedFunction for this(handler))
 route.post("/createUser", create)
+
+// now export this route to index.js 
+
+export default route;

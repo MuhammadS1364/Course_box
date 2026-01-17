@@ -4,12 +4,14 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv'
 import mongoose from 'mongoose';
+// import your all request method that defined
 
+import route from './routers/userRoute.js';
 
 // app configuration 
 
-dotenv.config();
 const app = express();
+dotenv.config();
 app.use(express.json());
 
 
@@ -41,5 +43,8 @@ mongoose
             console.log(`❌ MongoDB connection failed: ${error.message}`);
             
         })
-        // else through error
+        
+        // just mention the request path below
+
+route.use('/api', route)
         

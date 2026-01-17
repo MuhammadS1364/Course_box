@@ -9,15 +9,16 @@ const userSchema = mongoose.Schema({
     // Create table header for the table
     userName :{
         type: String,
-        require: true
+        required: true
     },
     userEmail :{
         type: String,
-        require: true
+        required: true,
+        unique: true
     },    
     userPassword :{
         type: String,
-        require: true
+        required: true
     },
 })
 
