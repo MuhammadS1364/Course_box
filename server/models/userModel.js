@@ -20,3 +20,7 @@ const userSchema = mongoose.Schema({
         require: true
     },
 })
+
+// export the model 
+
+export default mongoose.model("Users", userSchema)
