@@ -26,4 +26,24 @@ export const create = async (request, response) =>{
         response.status(500).json({errorMessage: error.message})
         console.log(`We are getting error : ${error.message}`);
     }
+};
+
+// getting all the data from a model or collection
+
+export const getAllUsers = async (request, response) =>{
+    try {
+        // call the .find() method to find all the data in the model 
+        const allUsersData = await Users.find();
+
+        // Check if data not found
+
+        if (!allUsersData || allUsersData.length === 0){
+            return response.status(404).json({message : "Users Data Not found......."});
+        }
+
+        response.status(200).json(allUsersData)
+    } catch (error) {
+        response.status(500).json({errorMessage: error.message})
+        console.log(`We are getting error : ${error.message}`);
+    }
 }
